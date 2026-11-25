@@ -1,7 +1,38 @@
 import React from "react";
 
+const LIMIT = 20;
+
+// current page 
+function getPages(current, total) {
+  if (total <= 8) return Array.from({ length: total }, (_, i) => i + 1);
+
+  // 1st pages: 1..8 aur end 
+  if (current <= 4) {
+    return [...Array.from({ length: 8 }, (_, i) => i + 1), "…"];
+  }
+
+  const start = Math.max(1, current - 3);
+  const end = Math.min(total, current + 3);
+  const pages = [];
+
+  if (start > 3) pages.push(1, 2, "…");
+  else for (let i = 1; i < start; i++) pages.push(i);
+
+  for (let i = start; i <= end; i++) pages.push(i);
+
+  if (end < total) pages.push("…");
+  return pages;
+}
+
+//  button common styling 
+const base = "border border-zinc-800 px-3 py-2 transition-all duration-200";
+const normal = "bg-[#1d1d1d] text-white hover:bg-[#6ac045]";
+const active = "bg-[#6ac045] border-[#6ac045] text-white";
+
 function Buttons({ page, setPage, totalMovies }) {
-  const totalPages = Math.ceil(totalMovies / 20);
+  const totalPages = Math.ceil(totalMovies / LIMIT);
+  const pages = getPages(page, totalPages);
+
   return (
     <div>
       <div className="mt-8 text-center">
@@ -15,121 +46,50 @@ function Buttons({ page, setPage, totalMovies }) {
       </div>
 
       <div className="mt-5 flex flex-wrap justify-center items-center gap-1 text-xs font-bold">
-        <button
-          onClick={() => setPage(1)}
-          disabled={page === 1}
-          className="border border-zinc-800 bg-[#1d1d1d] hover:bg-[#6ac045] text-white px-3 py-2"
-        >
-          &laquo; First
-        </button>
+        {/* First / Previous sirf page 2 se aage dikhein */}
+        {page > 1 && (
+          <>
+            <button onClick={() => setPage(1)} className={`${base} ${normal}`}>
+              &laquo; First
+            </button>
+            <button
+              onClick={() => setPage(page - 1)}
+              className={`${base} ${normal}`}
+            >
+              &laquo; Previous
+            </button>
+          </>
+        )}
 
-        <button
-          onClick={() => setPage(page > 1 ? page - 1 : 1)}
-          disabled={page === 1}
-          className="border border-zinc-800 bg-[#1d1d1d] hover:bg-[#6ac045] text-white px-3 py-2"
-        >
-          &laquo; Previous
-        </button>
+        {/* page numbers */}
+        {pages.map((p, i) =>
+          p === "…" ? (
+            <span
+              key={`dots-${i}`}
+              className="border border-zinc-800 bg-[#1d1d1d] text-zinc-500 px-2 py-2"
+            >
+              ...
+            </span>
+          ) : (
+            <button
+              key={p}
+              onClick={() => setPage(p)}
+              className={`${base} ${p === page ? active : normal}`}
+            >
+              {p}
+            </button>
+          )
+        )}
 
-        <button
-          onClick={() => setPage(1)}
-          className={`border border-zinc-800 px-3 py-2 transition-all duration-200 ${
-            page === 1
-              ? "bg-[#6ac045] border-[#6ac045] text-white"
-              : "bg-[#1d1d1d] text-zinc-400 hover:bg-[#6ac045] hover:text-white"
-          }`}
-        >
-          1
-        </button>
-
-        <button
-          onClick={() => setPage(2)}
-          className={`border border-zinc-800 px-3 py-2 transition-all duration-200 ${
-            page === 2
-              ? "bg-[#6ac045] border-[#6ac045] text-white"
-              : "bg-[#1d1d1d] text-zinc-400 hover:bg-[#6ac045] hover:text-white"
-          }`}
-        >
-          2
-        </button>
-
-        <button
-          onClick={() => setPage(3)}
-          className={`border border-zinc-800 px-3 py-2 transition-all duration-200 ${
-            page === 3
-              ? "bg-[#6ac045] border-[#6ac045] text-white"
-              : "bg-[#1d1d1d] text-zinc-400 hover:bg-[#6ac045] hover:text-white"
-          }`}
-        >
-          3
-        </button>
-
-        <button
-          onClick={() => setPage(4)}
-          className={`border border-zinc-800 px-3 py-2 transition-all duration-200 ${
-            page === 4
-              ? "bg-[#6ac045] border-[#6ac045] text-white"
-              : "bg-[#1d1d1d] text-zinc-400 hover:bg-[#6ac045] hover:text-white"
-          }`}
-        >
-          4
-        </button>
-
-        <button
-          onClick={() => setPage(5)}
-          className={`border border-zinc-800 px-3 py-2 transition-all duration-200 ${
-            page === 5
-              ? "bg-[#6ac045] border-[#6ac045] text-white"
-              : "bg-[#1d1d1d] text-zinc-400 hover:bg-[#6ac045] hover:text-white"
-          }`}
-        >
-          5
-        </button>
-
-        <button
-          onClick={() => setPage(6)}
-          className={`border border-zinc-800 px-3 py-2 transition-all duration-200 ${
-            page === 6
-              ? "bg-[#6ac045] border-[#6ac045] text-white"
-              : "bg-[#1d1d1d] text-zinc-400 hover:bg-[#6ac045] hover:text-white"
-          }`}
-        >
-          6
-        </button>
-
-        <button
-          onClick={() => setPage(7)}
-          className={`border border-zinc-800 px-3 py-2 transition-all duration-200 ${
-            page === 7
-              ? "bg-[#6ac045] border-[#6ac045] text-white"
-              : "bg-[#1d1d1d] text-zinc-400 hover:bg-[#6ac045] hover:text-white"
-          }`}
-        >
-          7
-        </button>
-
-        <button
-          onClick={() => setPage(8)}
-          className={`border border-zinc-800 px-3 py-2 transition-all duration-200 ${
-            page === 8
-              ? "bg-[#6ac045] border-[#6ac045] text-white"
-              : "bg-[#1d1d1d] text-zinc-400 hover:bg-[#6ac045] hover:text-white"
-          }`}
-        >
-          8
-        </button>
-
-        <span className="border border-zinc-800 bg-[#1d1d1d] text-zinc-500 px-2 py-2">
-          ...
-        </span>
-
-        <button
-          onClick={() => setPage(page < totalPages ? page + 1 : totalPages)}
-          disabled={page >= totalPages}
-          className="border border-zinc-800 bg-[#1d1d1d] hover:bg-[#6ac045] text-white px-3 py-2"
-        >
-          Next &raquo;
-        </button>
+        {/* Next end page no show */}
+        {page < totalPages && (
+          <button
+            onClick={() => setPage(page + 1)}
+            className={`${base} ${normal}`}
+          >
+            Next &raquo;
+          </button>
+        )}
       </div>
     </div>
   );

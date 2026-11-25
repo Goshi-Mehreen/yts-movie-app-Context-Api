@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
-import DropDown from './DropDown'
+import MovieFilter from './MovieFilter'
 import MovieContext from '../context/MovieContext'
 
 
 
 function Hero()  {
-  const { searchTerm, setSearchTerm, setSearchQuery } = useContext(MovieContext)
+  const { searchTerm, setSearchTerm, setSearchQuery,filters,setFilters } = useContext(MovieContext)
   
    
   return (
@@ -35,7 +35,7 @@ function Hero()  {
           
 
         </div>
-        <DropDown/>
+        <MovieFilter/>
         <br />
         
 

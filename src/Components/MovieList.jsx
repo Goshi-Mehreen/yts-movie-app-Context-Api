@@ -3,9 +3,10 @@ import Card from './Card'
 import MovieContext from '../context/MovieContext'
 
 function MovieList({page,setTotalMovies}) {
-  const {searchQuery} = useContext(MovieContext)
+  const {searchQuery,filters} = useContext(MovieContext)
 
   const [movies, setMovies] = useState([])
+  const [sortBy,orderBy] = filters.orderBy.split("-")
   
   
 
@@ -13,8 +14,7 @@ function MovieList({page,setTotalMovies}) {
     const fetchMovies = async () => {
       try {
        const response = await fetch(
-  `https://movies-api.accel.li/api/v2/list_movies.json?limit=20&page=${page}&sort_by=date_added&order_by=desc&query_term=${encodeURIComponent(searchQuery)}`
-)
+`https://movies-api.accel.li/api/v2/list_movies.json?limit=20&page=${page}&quality=${filters.quality}&genre=${filters.genre}&minimum_rating=${filters.rating}&sort_by=${sortBy}&order_by=${orderBy}&query_term=${encodeURIComponent(searchQuery)}`)
 
         const data = await response.json()
 
@@ -29,7 +29,7 @@ function MovieList({page,setTotalMovies}) {
     }
 
     fetchMovies()
-  }, [page,searchQuery])
+  }, [page,searchQuery,filters])
 
   return (
     <div className="bg-zinc-900 px-5 py-8">
